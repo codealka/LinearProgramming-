@@ -1,0 +1,14 @@
+x1  x2  x3  x4  x5  x6  z   solution
+1   1   1   1   0   0   0   600
+1   3   0   0   1   0   0   600
+2   0   1   0   0   1   0   900
+-60 -90 -300    0   0   0   1   0  
+
+
+
+
+#extracting the tableau from text file without headers
+#Last column contains the solutions 
+#penultimate column contains the objective function variable
+#all other columns contain variables and slack variables of the set of equations
+#while the last row contains the objective function in the form Z - x1 - x2 ... = 0
