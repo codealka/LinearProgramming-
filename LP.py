@@ -6,9 +6,18 @@ import math
 Tab = np.loadtxt('input3.txt' ,skiprows=1,comments='#') 
 
 def Simplex(M):
+    Zmax = []  # stores original objective function 
     Mshape = M.shape # for the size of the tableau
-    Mrows = Mshape[0]
+
+    #number of rows and columns
+    Mrows = Mshape[0] 
     Mcolumns = Mshape[1]
+
+    for element in range(Mcolumns):
+        Zmax.append(abs((M[Mrows-1][element])))
+
+
+
     print(Mshape)
     print(M)
     Optimum = False
@@ -40,7 +49,7 @@ def Simplex(M):
                 pass
         for i in range(Mcolumns-2):
             if M[Mrows - 1][i] == b:
-                index_c = i # getting the index as a location of in the array 
+                index_c = i # getting the index as a location in the array 
 
         #-------------------------------------------------------        
         # step 2: choosing pivot row ---------------------------
@@ -87,12 +96,9 @@ def Simplex(M):
         for j in range(Mcolumns):
             temp_row.append(M[index_r][j])
         
-        #print('this row is used for manipulations: ' + str(temp_row))
 
         for i in range(Mrows):
             Multiplier = (M[i][index_c])
-            #print('opertaing on row: ' + str(i+1))
-            #print('Multiplier: ' + str(Multiplier))
             if i == index_r:
                 pass
             else:
@@ -105,8 +111,7 @@ def Simplex(M):
                     else :
                         Multiplier1 = (-1)*Multiplier
                         M[i][j] = (M[i][j] + (temp_row[j]*Multiplier1))
-        print(M)
-
+        
 
         #----------------------------------------------------
         # step 4: Checking if an optimum has been found -------------
@@ -121,20 +126,67 @@ def Simplex(M):
             if element < 0:
                 counter += 1
             else:
-                #print('non-negative')
                 pass
 
         if counter == 0:
             Optimum = True
 
         #----------------------------------------------------------------
-        # step 5: displaying findings in the log.txt file -----------------------
+        # displaying findings in the log.txt file -----------------------
         #-----------------------------------------------------------------
         f = open('log.txt','a')
+        f.write("The Tableau After pivot number " + str(PC) +" : \n")
+        f.write("Pivot Column ==> " + str(index_c+1) + '\n')
+        f.write("Pivot Row ==> " + str(index_r+1) + '\n')
         f.write(str((M)) + "\n\n")
+        f.write('-----------------------------------\n')
         f.close()
-        
+    f = open('log.txt','a')
+    f.write('An optimal solution has been reached\n')    
+    f.write('-----------------------------------\n')
+    f.close
+
+
+    
+   
+    #----------------------------------------------------------------
+    # displaying findings in the solution.txt file ------------------
+    #----------------------------------------------------------------
+
+
+
+    # if unit vector set variable value to solution column 
+    # if non unit vector set vaiable value to zero
+
+    variableSolution = []
+    row_location = int
+    for column in range(Mcolumns-1):
+        x = 0
+        for row in range(Mrows):
+            if M[row][column] >= 1 :
+                x +=1
+                row_location = row
+            else:
+                pass
+        if x != 1:
+            variableSolution.append('0')
+        else:
+            variableSolution.append(str(M[row_location][Mcolumns-1]))
+
+    f = open('solution.txt', 'a')
+    f.write('The solution is: \n')
+    for i in range(len(variableSolution)-1):
+        f.write('X'+str(i+1)+' = '+variableSolution[i]+'\n')
+    f.write('Z = '+variableSolution[len(variableSolution)-1]+'\n')   
+    f.close()
+    
+
+            
+
+
 
 
    
 Simplex(Tab)
+
+
