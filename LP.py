@@ -1,28 +1,48 @@
-
 import numpy as np
 import math
 
 
-Tab = np.loadtxt('input3.txt' ,skiprows=1,comments='#') 
+
+#extracting the tableau from text file without headers
+#Last column contains the solutions 
+#penultimate column contains the objective function variable
+#all other columns contain variables and slack variables of the set of equations
+#while the last row contains the objective function in the form Z - x1 - x2 ... = 0
+
+print('\n' + 'Please enter file name here (in the form name.txt) : ')
+Filename = input()
+
+
+Tab = np.loadtxt(Filename,skiprows=1,comments='#') 
+open('log.txt', 'w').close()
+open('solution.txt', 'w').close()
 
 def Simplex(M):
     Zmax = []  # stores original objective function 
     Mshape = M.shape # for the size of the tableau
-
+    Slack = [] # stores position of slack variables
     #number of rows and columns
     Mrows = Mshape[0] 
     Mcolumns = Mshape[1]
 
-    for element in range(Mcolumns):
-        Zmax.append(abs((M[Mrows-1][element])))
+
+    for element in range(Mcolumns-2):
+        if (M[Mrows-1][element]) != 0:
+            Slack.append(0)
+        else:
+            Slack.append(1)
+    
+    #padding it have the same size "columns" as the rest of the matrix
+    Slack.append(0)
+    Slack.append(0)
+    
+    for element in range(Mcolumns-2):
+        Zmax.append(abs(M[Mrows-1][element]))
 
 
 
-    print(Mshape)
-    print(M)
     Optimum = False
     PC = 0 #pivot count
-
 
 
     while Optimum == False:
@@ -52,7 +72,7 @@ def Simplex(M):
                 index_c = i # getting the index as a location in the array 
 
         #-------------------------------------------------------        
-        # step 2: choosing pivot row ---------------------------
+        # step 2: finding pivot row ---------------------------
         #--------------------------------------------------------
 
 
@@ -153,7 +173,17 @@ def Simplex(M):
     # displaying findings in the solution.txt file ------------------
     #----------------------------------------------------------------
 
-
+    f=open('solution.txt','a')
+    f.write('Z = ')
+    x = 0
+    for i in range(len(Zmax)-1):
+        if Zmax[i] > 0:
+            x += 1
+            f.write(str(Zmax[i]) + 'x' + str(x) + ' + ')
+        else:
+            pass
+    f.write('\n')
+    f.close()
 
     # if unit vector set variable value to solution column 
     # if non unit vector set vaiable value to zero
@@ -175,11 +205,17 @@ def Simplex(M):
 
     f = open('solution.txt', 'a')
     f.write('The solution is: \n')
+    
     for i in range(len(variableSolution)-1):
-        f.write('X'+str(i+1)+' = '+variableSolution[i]+'\n')
+        f.write('X'+str(i+1)+' = '+variableSolution[i])
+        if Slack[i] == 1:
+            f.write('   (Slack variable)\n')
+        else:
+            f.write('\n')
     f.write('Z = '+variableSolution[len(variableSolution)-1]+'\n')   
     f.close()
     
+
 
             
 
@@ -188,5 +224,4 @@ def Simplex(M):
 
    
 Simplex(Tab)
-
 
