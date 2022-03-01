@@ -1,1 +1,1 @@
-Linear Programming assigment for Optimisation theory
+Linear Programming , Maximisation using the Simplex Method
